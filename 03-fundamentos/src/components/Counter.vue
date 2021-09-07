@@ -1,5 +1,5 @@
 <template>
-  <h2>Counter</h2>
+  <h2>{{title}}</h2>
   <p>{{counter}}<sub>2</sub> = {{squaredCounted}}</p>
 
   <div>
@@ -10,11 +10,24 @@
 
 <script>
 export default {
+    props: {
+        title: {
+            type: String,
+            default: 'Counter'
+        },
+        start: {
+            type: Number,
+            default: 10,
+            validator (value) {
+                return value >= 0
+            }
+        },
+    },
     name: 'Counter',
 
     data() {
         return {
-            counter: 5,
+            counter: this.start,
         }
     },
     methods:{
