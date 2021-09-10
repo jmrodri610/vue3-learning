@@ -1,10 +1,11 @@
 <template>
   <h2>{{title}}</h2>
+  <p data-testid="counter">{{counter}}</p>
   <p>{{counter}}<sub>2</sub> = {{squaredCounted}}</p>
 
   <div>
-      <button v-on:click="decrease">-1</button>
       <button @click="increase">+1</button>
+      <button v-on:click="decrease">-1</button>
   </div>
 </template>
 
@@ -17,7 +18,7 @@ export default {
         },
         start: {
             type: Number,
-            default: 10,
+            default: 100,
             validator (value) {
                 return value >= 0
             }

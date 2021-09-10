@@ -3,7 +3,7 @@
   <div class="bg-dark"></div>
   <div class="indecision-container">
       <input type="text" placeholder="Hazme una pregunta"  v-model="question" @keypress="askQuestion">
-      <p>Recuerda terminar con un signo de interrogación (?)></p>
+      <p>Recuerda terminar con un signo de interrogación (?)</p>
 
       <div v-if="isValidQuestion">
           <h2>{{questionToAsk}}</h2>
