@@ -6,8 +6,8 @@
       <p>Recuerda terminar con un signo de interrogación (?)</p>
 
       <div v-if="isValidQuestion">
-          <h2>{{questionToAsk}}</h2>
-          <h1>{{answer === 'yes' ? 'Si!':'No!'}}</h1>
+          <h2>{{question}}</h2>
+          <h1>{{answer}}</h1>
       </div>
   </div>
 </template>
@@ -25,12 +25,18 @@ export default {
     },
     methods: {
         async getAnswers() {
-            this.answer= 'Pensando....'
-
-            const {answer, image} = await fetch('https://yesno.wtf/api').then(r => r.json())
-
-            this.answer = answer
-            this.image = image
+            try {
+                this.answer= 'Pensando....'
+    
+                const {answer, image} = await fetch('https://yesno.wtf/api').then(r => r.json())
+    
+                this.answer = answer === 'yes' ? 'Si!':'No!'
+                this.image = image
+                
+            } catch (error) {   
+                this.answer = 'Could not get an answer'
+                
+            }
 
         }
     },
@@ -38,6 +44,8 @@ export default {
         question(value) {
 
             this.isValidQuestion = false
+
+            console.log({value})
             if(!value.includes('?')) return
             this.isValidQuestion = true
             this.getAnswers()
