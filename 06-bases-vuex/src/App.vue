@@ -1,16 +1,20 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
+  <counter></counter>
 </template>
 
 <script>
 
+import { defineAsyncComponent } from 'vue';
+
+
 export default {
   name: 'App',
   components: {
+    Counter: defineAsyncComponent( ()=> import('@/components/Counter'))
   }
 }
 </script>
-
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
