@@ -7,7 +7,13 @@
         <span class="mx-2 fs-4 fw-light">{{ yearDay }}</span>
       </div>
       <div>
-        <input type="file" @change="onSelectedImage" multiple >
+        <input
+          v-show="false"
+          type="file"
+          @change="onSelectedImage"
+          multiple
+          ref="imageSelector"
+        />
 
         <button
           v-if="entry.id"
@@ -16,7 +22,7 @@
         >
           Delete&nbsp;<i class="fa fa-trash-alt"></i>
         </button>
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" @click="onSelectImage">
           Upload&nbsp;<i class="fa fa-upload"></i>
         </button>
       </div>
@@ -29,7 +35,14 @@
       ></textarea>
     </div>
     <img
-      src="https://marketing4ecommerce.net/wp-content/uploads/2018/10/tipos-de-im%C3%A1genes.jpg"
+      v-if="entry.picture && !localImage"
+      :src="entry.picture"
+      alt="entry-picture"
+      class="img-thumbnail"
+    />
+    <img
+      v-if="localImage"
+      :src="localImage"
       alt="entry-picture"
       class="img-thumbnail"
     />
@@ -41,6 +54,7 @@
 import { defineAsyncComponent } from "vue";
 import { mapGetters, mapActions } from "vuex";
 import getDayMonthYear from "../../daybook/helpers/getDayMonthYear";
+import uploadImage from "../../daybook/helpers/uploadImage";
 import Swal from "sweetalert2";
 
 export default {
@@ -56,6 +70,8 @@ export default {
   data() {
     return {
       entry: null,
+      localImage: null,
+      file: null,
     };
   },
   computed: {
@@ -98,6 +114,10 @@ export default {
 
       Swal.showLoading();
 
+      const picture = await uploadImage(this.file);
+
+      this.entry.picture = picture;
+
       if (this.entry.id) {
         this.updateEntry(this.entry);
       } else {
@@ -105,6 +125,7 @@ export default {
         const id = await this.createEntry(this.entry);
         this.$router.push({ name: "entry", params: { id } });
       }
+      this.file = null;
       Swal.fire("Saved", "entry registered successfully", "success");
     },
 
@@ -128,13 +149,28 @@ export default {
 
         this.$router.push({ name: "no-entry" });
 
-        Swal.fire('Successfully removed','','success')
+        Swal.fire("Successfully removed", "", "success");
       }
     },
 
-    onSelectedImage( event ) {
-      console.log(event.target.files)
-    }
+    onSelectedImage(event) {
+      const file = event.target.files[0];
+
+      if (!file) {
+        this.localImage = null;
+        this.file = null;
+        return;
+      }
+
+      this.file = file;
+
+      const fr = new FileReader();
+      fr.onload = () => (this.localImage = fr.result);
+      fr.readAsDataURL(file);
+    },
+    onSelectImage() {
+      this.$refs.imageSelector.click();
+    },
   },
   created() {
     this.loadEntry();
