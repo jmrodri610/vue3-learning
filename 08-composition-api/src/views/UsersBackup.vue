@@ -5,10 +5,12 @@
   <h5 v-if="errorMessage">{{ errorMessage }}</h5>
 
   <div v-if="users?.length > 0">
-    <user-list :users="users" v-slot="{ user }">
-      <h5>{{ user.first_name }} {{ user.last_name }}</h5>
-      <span>{{ user.email }}</span>
-    </user-list>
+    <ul v-for="user in users" :key="user.id">
+      <li>
+        <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+        <h6>{{ user.email }}</h6>
+      </li>
+    </ul>
   </div>
 
   <button @click="previousPage">Previous</button>
@@ -17,11 +19,10 @@
 </template>
 
 <script>
+
 import useUsers from "@/composables/useUsers.js";
-import UserList from "@/components/UserList";
 
 export default {
-  components: { UserList },
   setup() {
     const {
       currentPage,

@@ -4,17 +4,23 @@
     alt="thanos"
   />
   <h1>Thanos' toDo list</h1>
-  <button :class="{ active: currentTab === 'all' }" @click="currentTab = 'all'">
+  <button
+    :class="{ active: currentTab === 'all' }"
+    class="btn mr-2"
+    @click="currentTab = 'all'"
+  >
     All Todos
   </button>
   <button
     :class="{ active: currentTab === 'pending' }"
+    class="btn mr-2"
     @click="currentTab = 'pending'"
   >
     Pending
   </button>
   <button
     :class="{ active: currentTab === 'completed' }"
+    class="btn"
     @click="currentTab = 'completed'"
   >
     Completed
@@ -38,17 +44,60 @@
       </li>
     </ul>
   </div>
+
+  <button class="btn" @click="openModal">New task</button>
+
+  <modal v-if="isOpen" @on:close="closeModal">
+    <template v-slot:header>
+      <h2>Create a new Task</h2>
+      <p>This task will be created as incomplete</p>
+      <hr />
+    </template>
+    <template v-slot:body>
+      <form @submit.prevent="createTask">
+        <input
+          type="text"
+          placeholder="Description of the task..."
+          v-model="taskDescription"
+        />
+        <div class="mt-2">
+          <button class="btn btn-success" type="submit">Create task</button>
+        </div>
+      </form>
+    </template>
+  </modal>
 </template>
 
 <script>
 import useTodos from "../composables/useTodos";
+import Modal from "@/components/Modal";
 
 export default {
+  components: { Modal },
   setup() {
+    const {
+      currentTab,
+      pending,
+      getTodosByTab,
+      toggleTodo,
+      isOpen,
+      openModal,
+      closeModal,
+      createTask,
+      taskDescription,
+    } = useTodos();
 
-    const { currentTab, pending, getTodosByTab, toggleTodo } = useTodos();
-
-    return { currentTab, pending, getTodosByTab, toggleTodo };
+    return {
+      currentTab,
+      pending,
+      getTodosByTab,
+      toggleTodo,
+      isOpen,
+      openModal,
+      closeModal,
+      createTask,
+      taskDescription,
+    };
   },
 };
 </script>
